@@ -1,0 +1,44 @@
+﻿.container {
+    max-width: 90%;
+    height: 92%;
+}
+.card-block {
+    display: block;
+    color: rgb(23, 43, 77);
+    display: block;
+    left: 0px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 45px;
+    position: absolute;
+    right: 0px;
+    height: 100%;
+    white-space: nowrap;
+}
+
+    .card-block .parent-card {
+        width: 300px;
+        display: inline-grid;
+        height: 100%;
+        margin-right: 16px;
+    }
+
+        .card-block .parent-card .parent-card-header {
+            margin-left: 0;
+            margin-right: 0;
+            margin-top: 0;
+            border: 0;
+        }
+
+        .card-block .parent-card .parent-card-body {
+            overflow-y: auto;
+        }
+
+        .card-block .parent-card .parent-card-footer {
+            margin-bottom: 20px;
+        }
+
+    .card-block .sub-card {
+        white-space: normal;
+        cursor: pointer;
+    }
