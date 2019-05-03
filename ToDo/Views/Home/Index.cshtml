@@ -28,16 +28,8 @@
                 });
             }
         });
-        $("#sortable1").sortable({
-            update: function (event, ui) {
-            },
-            stop: function (event, ui) {
-            },
-            receive: function(event, ui) {
-            },
-            connectWith: ".sortable"
-        });
-        $("#sortable2").sortable({
+       
+        $("div[id^='sortable']").sortable({
             update: function (event, ui) {
             },
             stop: function (event, ui) {
@@ -61,14 +53,20 @@
                         @item.Name
                     </div>
                     <div id="sortable@(item.Id)" class="disable-item-sorting card-body parent-card-body sortable">
-                        @foreach (var child in item.Children)
-                        {
-                            <div class="card sub-card">
-                                <div class="card-body">
-                                    @child.Name
-                                </div>
-                            </div>
+                        @{
+                            if (item.Children != null)
+                            {
+                                foreach (var child in item.Children)
+                                {
+                                    <div class="card sub-card">
+                                        <div class="card-body">
+                                            @child.Name
+                                        </div>
+                                    </div>
+                                }
+                            }
                         }
+
 
                     </div>
                     <div class="disable-item-sorting card-footer parent-card-footer">
