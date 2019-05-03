@@ -7,8 +7,14 @@
 <script>
     $(document).ready(function () {
         $("#itemSortable").sortable({
+            placeholder: 'ui-state-highlight',
+            dropOnEmpty: true,
+            revert: true,
+            axis: "x",
+            opacity: 0.5,
             cancel: ".disable-item-sorting",
             update: function (event, ui) {
+                debugger
                 var itemIds = "";
                 $("#sortable").find(".parent-card").each(function () {
                     var itemId = $(this).attr("data-item-id");
@@ -28,16 +34,23 @@
                 });
             }
         });
-       
+
         $("div[id^='sortable']").sortable({
+            opacity: 0.5,
+            revert: true,
+            dropOnEmpty: true,
+            scroll: true,
             update: function (event, ui) {
+                debugger
             },
             stop: function (event, ui) {
+                debugger
 
             },
             receive: function(event, ui) {
+                debugger
             },
-            connectWith: ".sortable"
+            connectWith: "div[class*='sortable']"
         });
 
     });
@@ -58,9 +71,17 @@
                             {
                                 foreach (var child in item.Children)
                                 {
-                                    <div class="card sub-card">
+                                    <div class="card sub-card"  id="child@(item.Children + "|" + item.Id)" data-item-id="@(item.Children + "|" + item.Id)">
                                         <div class="card-body">
                                             @child.Name
+                                        </div>
+                                        <div class=" edit-card">
+                                            <a href="#pablo" class="btn btn-success btn-sm btn-just-icon btn-fill btn-round btn-wd">
+                                                <i class="material-icons">mode_edit</i>
+                                            </a>
+                                            <a href="#pablo" class="btn btn-danger btn-sm btn-just-icon btn-fill btn-round">
+                                                <i class="material-icons">delete</i>
+                                            </a>
                                         </div>
                                     </div>
                                 }
@@ -69,11 +90,17 @@
 
 
                     </div>
-                    <div class="disable-item-sorting card-footer parent-card-footer">
-                        Novo
+                    <div class="disable-item-sorting card-footer parent-card-footer" style="">
+                        <span>+ New sub-item</span>
                     </div>
                 </div>
             }
+            <div class="card parent-card new-parent-card fixed"  id="item-1" data-item-id="-1">
+                <div class="card-header card-header-primary parent-card-header">
+                   + New item
+                </div>
+            </div>
         </div>
+
     </div>
 </div>
