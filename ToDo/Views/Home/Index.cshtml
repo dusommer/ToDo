@@ -28,7 +28,25 @@
                 });
             }
         });
-        $( "#draggable" ).draggable();
+        $("#sortable1").sortable({
+            update: function (event, ui) {
+            },
+            stop: function (event, ui) {
+            },
+            receive: function(event, ui) {
+            },
+            connectWith: ".sortable"
+        });
+        $("#sortable2").sortable({
+            update: function (event, ui) {
+            },
+            stop: function (event, ui) {
+
+            },
+            receive: function(event, ui) {
+            },
+            connectWith: ".sortable"
+        });
 
     });
 </script>
@@ -42,7 +60,7 @@
                     <div class="card-header card-header-primary parent-card-header">
                         @item.Name
                     </div>
-                    <div class="disable-item-sorting card-body parent-card-body">
+                    <div id="sortable@(item.Id)" class="disable-item-sorting card-body parent-card-body sortable">
                         @foreach (var child in item.Children)
                         {
                             <div class="card sub-card">
