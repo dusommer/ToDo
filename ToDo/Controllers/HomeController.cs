@@ -42,18 +42,10 @@ namespace ToDo.Controllers
             return View();
         }
 
-        public ActionResult SaveNewItem(string description)
-        {
-            var lista = ListItem;
-            var item = new Item() { Description = description, Id = ListItem.Count() + 1, Position = ListItem.Count() };
-            lista.Add(item);
-            ListItem = lista;
-            return Json(lista = ListItem, JsonRequestBehavior.AllowGet);
-        }
-
         public ActionResult UpdateItem(string itens)
         {
-            if (string.IsNullOrEmpty(itens))
+            var updated = new List<Item>();
+            if (!string.IsNullOrEmpty(itens))
             {
                 var list = itens.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
 
@@ -63,10 +55,10 @@ namespace ToDo.Controllers
                     if (item != null && item.Position != i)
                     {
                         item.Position = i;
+                        updated.Add(item);
                     }
                 }
             }
-
             return Json(true, JsonRequestBehavior.AllowGet);
         }
 
@@ -74,8 +66,35 @@ namespace ToDo.Controllers
         {
             int count = 1;
             List<int> itemId = new List<int>();
-            itemId = itemIds.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
+            //itemId = itemIds.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
             return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        public ActionResult SaveItem(string description, string itemId, string buttonType)
+        {
+            var auxList = ListItem;
+            var item = new Item();
+            switch (buttonType)
+            {
+                case "Save":
+                    item = new Item() { Description = description, Id = ListItem.Max(x=>x.Id) + 1, Position = ListItem.Count() };
+                    auxList.Add(item);
+                    break;
+                case "Update":
+                    item = auxList.FirstOrDefault(x => x.Id.ToString().Equals(itemId));
+                    item.Description = description;
+                    break;
+                case "Remove":
+                    item = auxList.FirstOrDefault(x => x.Id.ToString().Equals(itemId));
+                    auxList.Remove(item);
+                    break;
+                default:
+                    break;
+            }
+            ListItem = auxList;
+            return PartialView("PartialItens", ListItem);
         }
     }
 }

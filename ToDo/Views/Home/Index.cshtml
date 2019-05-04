@@ -5,139 +5,64 @@
 }
 
 <script>
-    $(document).ready(function () {
-        $("#itemSortable .static").each(function () {
-            $(this).attr("id", "cardToAddNewItem-" + $(this).index());
-        });
 
-        $("#itemSortable").sortable({
-            placeholder: 'ui-state-highlight',
-            dropOnEmpty: true,
-            revert: true,
-            axis: "x",
-            opacity: 0.5,
-            cancel: ".disable-item-sorting",
-            update: function (event, ui) {
-
-                 $("#itemSortable .static").each(function() {
-                   var desiredLocation = $(this).attr("id").replace("cardToAddNewItem-","");
-                   var currentLocation = $(this).index();
-                   while(currentLocation < desiredLocation) {
-                     $(this).next().insertBefore(this);
-                      currentLocation++;
-                    }
-                    while(currentLocation > desiredLocation) {
-                     $(this).prev().insertAfter(this);
-                      currentLocation--;
-                    }
-                });
-
-
-
-
-                var itens = "";
-                $("#itemSortable").find(".item-card").each(function () {
-                    var itemId = $(this).attr("data-item-id");
-                    itens = itens + "," + itemId;
-                });
-                $.ajax({
-                    url: '@Url.Action("UpdateItem", "Home")',
-                    data: { itens: itens },
-                    type: 'POST',
-                    success: function (data) {
-
-                    },
-                    error: function (xhr, status, error) {
-
-                    }
-
-                });
-            }
-        });
-
-        $("div[id^='subItemsortable']").sortable({
-            opacity: 0.5,
-            revert: true,
-            dropOnEmpty: true,
-            scroll: true,
-            update: function (event, ui) {
-                var itemIds = "";
-                $("div[id*='subItemsortable']").find(".sub-item-card").each(function () {
-                    var itemId = $(this).attr("data-sub-item-id");
-                    itemIds = itemIds + "," + itemId;
-                });
-                $.ajax({
-                    url: '@Url.Action("UpdateSubItem", "Home")',
-                    data: { itemIds: itemIds },
-                    type: 'POST',
-                    success: function (data) {
-
-                    },
-                    error: function (xhr, status, error) {
-
-                    }
-
-                });
-            },
-            stop: function (event, ui) {
-
-            },
-            receive: function(event, ui) {
-            },
-            connectWith: "div[class*='sortable']"
-        });
-
-    });
-
-    function SaveNewItem() {
-        var description = document.getElementById("inptNewItem").value;
-        $.ajax({
-            url: '@Url.Action("SaveNewItem", "Home")',
-            data: { description: description },
-            type: 'POST',
-            success: function (data) {
-
-            },
-            error: function (xhr, status, error) {
-
-            }
-        });
+    function CloseModal() {
+        $("#addEditItemModal").modal("hide");
     }
 
-    function AddNewItem() {
-        document.getElementById("inptDescription").value = "";
-        document.querySelector('[id*="cardToAddNewItem-"]').classList.add("d-none");
-        document.getElementById("cardAddNewItem").classList.remove("d-none");
-
-    }
-    function CancelAddNewItem() {
-        document.querySelector('[id*="cardToAddNewItem-"]').classList.remove("d-none");
-        document.getElementById("cardAddNewItem").classList.add("d-none");
+    function AddEditItem(id, description) {
+        debugger
+        if (id == undefined) {
+            document.getElementById("btnRemoveItem").classList.add("d-none");
+            document.getElementById("btnSaveItem").classList.remove("d-none");
+            document.getElementById("btnUpdateItem").classList.add("d-none");
+            document.getElementById("itemModalLabel").innerText = "Add new item";
+            document.getElementById("inptDescription").value = "";
+            document.getElementById("inptItemId").value = "";
+        }
+        else {
+            document.getElementById("btnRemoveItem").classList.remove("d-none");
+            document.getElementById("btnSaveItem").classList.add("d-none");
+            document.getElementById("btnUpdateItem").classList.remove("d-none");
+            document.getElementById("itemModalLabel").innerText = "Edit item";
+            document.getElementById("inptDescription").value = description;
+            document.getElementById("inptItemId").value = id;
+        }
+        $("#addEditItemModal").modal("show");
     }
 </script>
 <div class="container">
+    <button class="btn btn-primary btn-round" onclick="AddEditItem()">
+        <i class="material-icons">add</i>  Add new item
+    </button>
     <div class="card-block" id="itemSortable">
         @Html.Partial("PartialItens", ViewBag.ListItens as List<Item>)
+    </div>
+</div>
 
-        <div class="card item-card new-item-card disable-item-sorting d-none" data-item-id="-1" id="cardAddNewItem">
-            <div class="card-header card-header-primary item-card-header">
-                Enter a new item
-                <input type="text" class="form-control" placeholder="Description" id="inptDescription">
-                <div class="float-right d-inline-flex">
-                    <button class="btn btn-link">
-                        <i class="fa fa-save"></i>
+
+@using (Ajax.BeginForm("SaveItem", "Home", new AjaxOptions() { UpdateTargetId = "itemSortable", InsertionMode = InsertionMode.Replace, HttpMethod = "POST" }))
+{
+    <div class="modal fade" id="addEditItemModal" tabindex="-1" role="dialog" aria-labelledby="itemModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="itemModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
                     </button>
-                    <button class="btn btn-link" onclick="CancelAddNewItem()">
-                        <i class="fa fa-remove"></i>
-                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="itemId" id="inptItemId" value="" />
+                    <input type="text" name="description" class="form-control" placeholder="Description" id="inptDescription">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary mr-1" onclick="CloseModal()" id="btnSaveItem" name="ButtonType" value="Save">Save</button>
+                    <button type="submit" class="btn btn-primary mr-1" onclick="CloseModal()" id="btnUpdateItem" name="ButtonType" value="Update">Update</button>
+                    <button type="submit" class="btn btn-danger mr-1 d-none" onclick="CloseModal()" id="btnRemoveItem" name="ButtonType" value="Remove">Remove</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
-
-        <div class="card item-card new-item-card disable-item-sorting static" data-item-id="-1">
-            <div class="card-header card-header-primary item-card-header">
-                <div id="lblNewItem" onclick="AddNewItem()">+ Add new item</div>
-            </div>
-        </div>
     </div>
-</div>
+}

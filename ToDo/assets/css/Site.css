@@ -1,6 +1,11 @@
 ﻿.container {
     max-width: 99%;
     height: 92%;
+    overflow-x: auto;
+    padding-bottom: 45px;
+    position: absolute;
+    right: 0px;
+    height: 100%;
 }
 
 .card-block {
@@ -13,7 +18,7 @@
     padding-bottom: 45px;
     position: absolute;
     right: 0px;
-    height: 100%;
+    height: 90%;
     white-space: nowrap;
 }
 
@@ -64,7 +69,7 @@
         cursor: pointer;
     }
 
-.edit-card {
+.edit-sub-item-card {
     background-clip: padding-box;
     background-origin: padding-box;
     border-radius: 3px;
@@ -75,12 +80,22 @@
     top: 2px;
 }
 
-.card-body:hover ~ .edit-card {
+.card-body:hover ~ .edit-sub-item-card {
     visibility: visible;
     opacity: 0.3;
 }
 
-.edit-card:hover {
+.edit-sub-item-card:hover {
+    visibility: visible;
+    opacity: 1;
+}
+
+.card-header:hover ~ .edit-sub-item-card {
+    visibility: visible;
+    opacity: 0.3;
+}
+
+.edit-sub-item-card:hover {
     visibility: visible;
     opacity: 1;
 }

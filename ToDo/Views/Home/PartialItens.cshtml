@@ -1,11 +1,79 @@
 ﻿@model IEnumerable<Item>
 @using ToDo.Models
+<script>
 
+    $(document).ready(function () {
+
+        $("#itemSortable").sortable({
+            placeholder: 'ui-state-highlight',
+            revert: true,
+            axis: "x",
+            cancel: ".disable-item-sorting",
+            opacity: 0.5,
+            update: function (event, ui) {
+                var itens = "";
+                $("#itemSortable").find(".item-card").each(function () {
+                    var itemId = $(this).attr("data-item-id");
+                    itens = itens + "," + itemId;
+                });
+                $.ajax({
+                    url: '@Url.Action("UpdateItem", "Home")',
+                    data: { itens: itens },
+                    type: 'POST',
+                    success: function (data) {
+
+                    },
+                    error: function (xhr, status, error) {
+
+                    }
+
+                });
+            }
+        });
+
+        $("div[id^='subItemsortable']").sortable({
+            opacity: 0.5,
+            revert: true,
+            cancel: ".disable-sub-item-sorting",
+            update: function (event, ui) {
+                var itemIds = "";
+                $("div[id*='subItemsortable']").find(".sub-item-card").each(function () {
+                    var itemId = $(this).attr("data-sub-item-id");
+                    itemIds = itemIds + "," + itemId;
+                });
+                $.ajax({
+                    url: '@Url.Action("UpdateSubItem", "Home")',
+                    data: { itemIds: itemIds },
+                    type: 'POST',
+                    success: function (data) {
+
+                    },
+                    error: function (xhr, status, error) {
+
+                    }
+
+                });
+            },
+            stop: function (event, ui) {
+
+            },
+            receive: function(event, ui) {
+            },
+            connectWith: ".sortable"
+        });
+
+    });
+</script>
 @foreach (var item in Model)
 {
     <div class="card item-card" id="item@(item.Id)" data-item-id="@(item.Id)">
         <div class="card-header card-header-primary item-card-header">
-            @item.Description
+            <labe id="descript@(item.Id)">@item.Description</labe>
+        </div>
+        <div class="edit-sub-item-card">
+            <a href="#" class="disable-item-sorting btn btn-success btn-sm btn-just-icon btn-fill btn-round btn-wd" onclick="AddEditItem(@item.Id,'@item.Description')">
+                <i class="material-icons">mode_edit</i>
+            </a>
         </div>
         <div id="subItemsortable@(item.Id)" class="disable-item-sorting card-body item-card-body sortable">
             @{
@@ -17,8 +85,8 @@
                             <div class="card-body">
                                 @child.Description
                             </div>
-                            <div class="  edit-card">
-                                <a href="#pablo" class="disable-item-sorting btn btn-success btn-sm btn-just-icon btn-fill btn-round btn-wd">
+                            <div class="edit-sub-item-card">
+                                <a href="#" class="disable-sub-item-sorting btn btn-success btn-sm btn-just-icon btn-fill btn-round btn-wd">
                                     <i class="material-icons">mode_edit</i>
                                 </a>
                             </div>
