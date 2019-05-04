@@ -8,8 +8,8 @@
     $(document).ready(function () {
         $("#itemSortable .static").each(function () {
              $(this).attr("id", "static-" + $(this).index());
-        }); 
-   
+        });
+
         $("#itemSortable").sortable({
             placeholder: 'ui-state-highlight',
             dropOnEmpty: true,
@@ -18,32 +18,33 @@
             opacity: 0.5,
             cancel: ".disable-item-sorting",
             update: function (event, ui) {
-                
+
                  $("#itemSortable .static").each(function() {
                     debugger
                    var desiredLocation = $(this).attr("id").replace("static-","");
                    var currentLocation = $(this).index();
                    while(currentLocation < desiredLocation) {
                      $(this).next().insertBefore(this);
-                      currentLocation++;  
+                      currentLocation++;
                     }
                     while(currentLocation > desiredLocation) {
                      $(this).prev().insertAfter(this);
-                      currentLocation--;  
+                      currentLocation--;
                     }
                 });
 
 
 
 
-                var itemIds = "";
-                $("#itemSortable").find(".parent-card").each(function () {
+                var itens = "";
+                $("#itemSortable").find(".item-card").each(function () {
                     var itemId = $(this).attr("data-item-id");
-                    itemIds = itemIds + "," + itemId;
+                    itens = itens + "," + itemId;
                 });
+                debugger
                 $.ajax({
                     url: '@Url.Action("UpdateItem", "Home")',
-                    data: { itemIds: itemIds },
+                    data: { itens: itens },
                     type: 'POST',
                     success: function (data) {
 
@@ -65,8 +66,9 @@
                 debugger
 
                 var itemIds = "";
-                $("div[id*='subItemsortable']").find(".parent-card").each(function () {
-                    var itemId = $(this).attr("data-item-id");
+                $("div[id*='subItemsortable']").find(".sub-item-card").each(function () {
+                    debugger
+                    var itemId = $(this).attr("data-sub-item-id");
                     itemIds = itemIds + "," + itemId;
                 });
                 $.ajax({
@@ -100,17 +102,17 @@
         <div class="card-block" id="itemSortable">
             @foreach (var item in Model)
             {
-                <div class="card parent-card" id="item@(item.Id)" data-item-id="@(item.Id)">
-                    <div class="card-header card-header-primary parent-card-header">
+                <div class="card item-card" id="item@(item.Id)" data-item-id="@(item.Id)">
+                    <div class="card-header card-header-primary item-card-header">
                         @item.Name
                     </div>
-                    <div id="subItemsortable@(item.Id)" class="disable-item-sorting card-body parent-card-body sortable">
+                    <div id="subItemsortable@(item.Id)" class="disable-item-sorting card-body item-card-body sortable">
                         @{
                             if (item.Children != null)
                             {
                                 foreach (var child in item.Children)
                                 {
-                                    <div class="card sub-card"  id="child@(child.Id + "|" + item.Id)" data-item-id="@(child.Id + "|" + item.Id)">
+                                    <div class="card sub-item-card" id="child@(child.Id + "|" + item.Id)" data-sub-item-id="@(child.Id + "|" + item.Id)">
                                         <div class="card-body">
                                             @child.Name
                                         </div>
@@ -126,17 +128,35 @@
 
 
                     </div>
-                    <div class="disable-item-sorting card-footer parent-card-footer" style="">
+                    <div class="disable-item-sorting card-footer item-card-footer" data-toggle="modal" data-target="#exampleModal">
                         <span>+ New sub-item</span>
                     </div>
                 </div>
             }
-            <div class="card parent-card new-parent-card disable-item-sorting static" data-item-id="-1">
-                <div class="card-header card-header-primary parent-card-header">
-                   + New item
+            <div class="card item-card new-item-card disable-item-sorting static" data-item-id="-1">
+                <div class="card-header card-header-primary item-card-header" data-toggle="modal" data-target="#exampleModal">
+                    + New item
                 </div>
             </div>
         </div>
-
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
     </div>
 </div>

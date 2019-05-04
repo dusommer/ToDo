@@ -17,18 +17,18 @@
     white-space: nowrap;
 }
 
-    .card-block .parent-card {
+    .card-block .item-card {
         width: 300px;
         display: inline-flex;
         height: 100%;
         margin-right: 16px;
     }
 
-    .card-block .new-parent-card {
+    .card-block .new-item-card {
         height: 0px;
     }
 
-        .card-block .parent-card .parent-card-header {
+        .card-block .item-card .item-card-header {
             margin-left: 0;
             margin-right: 0;
             margin-top: 0;
@@ -38,11 +38,11 @@
             cursor:pointer;
         }
 
-        .card-block .parent-card .parent-card-body {
+        .card-block .item-card .item-card-body {
             overflow-y: auto;
         }
 
-        .card-block .parent-card .parent-card-footer {
+        .card-block .item-card .item-card-footer {
             cursor: pointer;
             font-size: 18px;
             padding-top: 15px;
@@ -50,12 +50,12 @@
             font-weight: 400;
         }
 
-            .card-block .parent-card .parent-card-footer:hover {
+            .card-block .item-card .item-card-footer:hover {
                 background-color: gray;
                 background-color: rgba(9,30,66,.13);
             }
 
-    .card-block .sub-card {
+    .card-block .sub-item-card {
         white-space: normal;
         cursor: pointer;
     }
