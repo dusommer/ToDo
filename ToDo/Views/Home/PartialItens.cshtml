@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Item>
+@using ToDo.Models
+
+@foreach (var item in Model)
+{
+    <div class="card item-card" id="item@(item.Id)" data-item-id="@(item.Id)">
+        <div class="card-header card-header-primary item-card-header">
+            @item.Description
+        </div>
+        <div id="subItemsortable@(item.Id)" class="disable-item-sorting card-body item-card-body sortable">
+            @{
+                if (item.Children != null)
+                {
+                    foreach (var child in item.Children)
+                    {
+                        <div class="card sub-item-card" id="child@(child.Id + "|" + item.Id)" data-sub-item-id="@(child.Id + "|" + item.Id)">
+                            <div class="card-body">
+                                @child.Description
+                            </div>
+                            <div class="  edit-card">
+                                <a href="#pablo" class="disable-item-sorting btn btn-success btn-sm btn-just-icon btn-fill btn-round btn-wd">
+                                    <i class="material-icons">mode_edit</i>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+
+
+        </div>
+        <div class="disable-item-sorting card-footer item-card-footer" data-toggle="modal" data-target="#newItemModal">
+            <span>+ New sub-item</span>
+        </div>
+    </div>
+}

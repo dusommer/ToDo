@@ -13,7 +13,11 @@ namespace ToDo.Controllers
         {
             get
             {
-                return (Session["ListItem"] as List<Item>).OrderBy(x => x.Position).ToList();
+                if (Session["ListItem"] != null)
+                {
+                    return (Session["ListItem"] as List<Item>).OrderBy(x => x.Position).ToList();
+                }
+                return new List<Item>();
             }
             set
             {
@@ -22,7 +26,7 @@ namespace ToDo.Controllers
         }
         public ActionResult Index()
         {
-            if (ListItem == null)
+            if (ListItem.Count == 0)
             {
                 List<Item> itens = new List<Item>();
                 List<Item> children = new List<Item>();
@@ -34,14 +38,17 @@ namespace ToDo.Controllers
                 itens.Add(new Item() { Description = "Done", Id = 3, Position = 2 });
                 ListItem = itens;
             }
-
-            return View(ListItem);
+            ViewBag.ListItens = ListItem;
+            return View();
         }
 
         public ActionResult SaveNewItem(string description)
         {
-            ListItem.Add(new Item() { Description = description, Id = ListItem.Count(), Position = ListItem.Count() });
-            return Json(true, JsonRequestBehavior.AllowGet);
+            var lista = ListItem;
+            var item = new Item() { Description = description, Id = ListItem.Count() + 1, Position = ListItem.Count() };
+            lista.Add(item);
+            ListItem = lista;
+            return Json(lista = ListItem, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult UpdateItem(string itens)

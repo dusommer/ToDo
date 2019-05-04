@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ToDo.Models.Item>
+﻿@using ToDo.Models
 
 @{
     ViewBag.Title = "Home Page";
@@ -7,7 +7,7 @@
 <script>
     $(document).ready(function () {
         $("#itemSortable .static").each(function () {
-             $(this).attr("id", "static-" + $(this).index());
+            $(this).attr("id", "cardToAddNewItem-" + $(this).index());
         });
 
         $("#itemSortable").sortable({
@@ -20,8 +20,7 @@
             update: function (event, ui) {
 
                  $("#itemSortable .static").each(function() {
-                    debugger
-                   var desiredLocation = $(this).attr("id").replace("static-","");
+                   var desiredLocation = $(this).attr("id").replace("cardToAddNewItem-","");
                    var currentLocation = $(this).index();
                    while(currentLocation < desiredLocation) {
                      $(this).next().insertBefore(this);
@@ -41,7 +40,6 @@
                     var itemId = $(this).attr("data-item-id");
                     itens = itens + "," + itemId;
                 });
-                debugger
                 $.ajax({
                     url: '@Url.Action("UpdateItem", "Home")',
                     data: { itens: itens },
@@ -63,11 +61,8 @@
             dropOnEmpty: true,
             scroll: true,
             update: function (event, ui) {
-                debugger
-
                 var itemIds = "";
                 $("div[id*='subItemsortable']").find(".sub-item-card").each(function () {
-                    debugger
                     var itemId = $(this).attr("data-sub-item-id");
                     itemIds = itemIds + "," + itemId;
                 });
@@ -85,11 +80,9 @@
                 });
             },
             stop: function (event, ui) {
-                debugger
 
             },
             receive: function(event, ui) {
-                debugger
             },
             connectWith: "div[class*='sortable']"
         });
@@ -97,69 +90,53 @@
     });
 
     function SaveNewItem() {
+        var description = document.getElementById("inptNewItem").value;
+        $.ajax({
+            url: '@Url.Action("SaveNewItem", "Home")',
+            data: { description: description },
+            type: 'POST',
+            success: function (data) {
+
+            },
+            error: function (xhr, status, error) {
+
+            }
+        });
+    }
+
+    function AddNewItem() {
+        document.getElementById("inptDescription").value = "";
+        document.querySelector('[id*="cardToAddNewItem-"]').classList.add("d-none");
+        document.getElementById("cardAddNewItem").classList.remove("d-none");
 
     }
+    function CancelAddNewItem() {
+        document.querySelector('[id*="cardToAddNewItem-"]').classList.remove("d-none");
+        document.getElementById("cardAddNewItem").classList.add("d-none");
+    }
 </script>
+<div class="container">
+    <div class="card-block" id="itemSortable">
+        @Html.Partial("PartialItens", ViewBag.ListItens as List<Item>)
 
-<div class="page-header header-filter" data-parallax="true" style="background-image: url('../assets/img/bg7.jpg')">
-    <div class="container">
-        <div class="card-block" id="itemSortable">
-            @foreach (var item in Model)
-            {
-                <div class="card item-card" id="item@(item.Id)" data-item-id="@(item.Id)">
-                    <div class="card-header card-header-primary item-card-header">
-                        @item.Description
-                    </div>
-                    <div id="subItemsortable@(item.Id)" class="disable-item-sorting card-body item-card-body sortable">
-                        @{
-                            if (item.Children != null)
-                            {
-                                foreach (var child in item.Children)
-                                {
-                                    <div class="card sub-item-card" id="child@(child.Id + "|" + item.Id)" data-sub-item-id="@(child.Id + "|" + item.Id)">
-                                        <div class="card-body">
-                                            @child.Description
-                                        </div>
-                                        <div class="  edit-card">
-                                            <a href="#pablo" class="disable-item-sorting btn btn-success btn-sm btn-just-icon btn-fill btn-round btn-wd">
-                                                <i class="material-icons">mode_edit</i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                }
-                            }
-                        }
-
-
-                    </div>
-                    <div class="disable-item-sorting card-footer item-card-footer" data-toggle="modal" data-target="#exampleModal">
-                        <span>+ New sub-item</span>
-                    </div>
-                </div>
-            }
-            <div class="card item-card new-item-card disable-item-sorting static" data-item-id="-1">
-                <div class="card-header card-header-primary item-card-header" data-toggle="modal" data-target="#exampleModal">
-                    + New item
+        <div class="card item-card new-item-card disable-item-sorting d-none" data-item-id="-1" id="cardAddNewItem">
+            <div class="card-header card-header-primary item-card-header">
+                Enter a new item
+                <input type="text" class="form-control" placeholder="Description" id="inptDescription">
+                <div class="float-right d-inline-flex">
+                    <button class="btn btn-link">
+                        <i class="fa fa-save"></i>
+                    </button>
+                    <button class="btn btn-link" onclick="CancelAddNewItem()">
+                        <i class="fa fa-remove"></i>
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<div class="modal fade" id="newItemModal" tabindex="-1" role="dialog" aria-labelledby="newItemModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">New item</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <input type="text" class="form-control" placeholder="Description" id="inptNewItem">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="SaveNewItem()">Save changes</button>
+
+        <div class="card item-card new-item-card disable-item-sorting static" data-item-id="-1">
+            <div class="card-header card-header-primary item-card-header">
+                <div id="lblNewItem" onclick="AddNewItem()">+ Add new item</div>
             </div>
         </div>
     </div>
