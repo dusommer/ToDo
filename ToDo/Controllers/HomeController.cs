@@ -22,7 +22,15 @@ namespace ToDo.Controllers
             return View(itens);
         }
 
-        public ActionResult Update(string itemIds)
+        public ActionResult UpdateItem(string itemIds)
+        {
+            int count = 1;
+            List<int> itemId = new List<int>();
+            itemId = itemIds.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult UpdateSubItem(string itemIds)
         {
             int count = 1;
             List<int> itemId = new List<int>();

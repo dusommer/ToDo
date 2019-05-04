@@ -73,9 +73,11 @@
 
 .card-body:hover ~ .edit-card {
     visibility: visible;
+    opacity:0.3;
 }
 .edit-card:hover {
     visibility: visible;
+    opacity: 1;
 }
 
 .ui-state-highlight {

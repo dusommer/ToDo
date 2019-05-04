@@ -6,6 +6,10 @@
 
 <script>
     $(document).ready(function () {
+        $("#itemSortable .static").each(function () {
+             $(this).attr("id", "static-" + $(this).index());
+        }); 
+   
         $("#itemSortable").sortable({
             placeholder: 'ui-state-highlight',
             dropOnEmpty: true,
@@ -14,14 +18,31 @@
             opacity: 0.5,
             cancel: ".disable-item-sorting",
             update: function (event, ui) {
-                debugger
+                
+                 $("#itemSortable .static").each(function() {
+                    debugger
+                   var desiredLocation = $(this).attr("id").replace("static-","");
+                   var currentLocation = $(this).index();
+                   while(currentLocation < desiredLocation) {
+                     $(this).next().insertBefore(this);
+                      currentLocation++;  
+                    }
+                    while(currentLocation > desiredLocation) {
+                     $(this).prev().insertAfter(this);
+                      currentLocation--;  
+                    }
+                });
+
+
+
+
                 var itemIds = "";
-                $("#sortable").find(".parent-card").each(function () {
+                $("#itemSortable").find(".parent-card").each(function () {
                     var itemId = $(this).attr("data-item-id");
                     itemIds = itemIds + "," + itemId;
                 });
                 $.ajax({
-                    url: '@Url.Action("Update", "Home")',
+                    url: '@Url.Action("UpdateItem", "Home")',
                     data: { itemIds: itemIds },
                     type: 'POST',
                     success: function (data) {
@@ -35,13 +56,31 @@
             }
         });
 
-        $("div[id^='sortable']").sortable({
+        $("div[id^='subItemsortable']").sortable({
             opacity: 0.5,
             revert: true,
             dropOnEmpty: true,
             scroll: true,
             update: function (event, ui) {
                 debugger
+
+                var itemIds = "";
+                $("div[id*='subItemsortable']").find(".parent-card").each(function () {
+                    var itemId = $(this).attr("data-item-id");
+                    itemIds = itemIds + "," + itemId;
+                });
+                $.ajax({
+                    url: '@Url.Action("UpdateSubItem", "Home")',
+                    data: { itemIds: itemIds },
+                    type: 'POST',
+                    success: function (data) {
+
+                    },
+                    error: function (xhr, status, error) {
+
+                    }
+
+                });
             },
             stop: function (event, ui) {
                 debugger
@@ -65,22 +104,19 @@
                     <div class="card-header card-header-primary parent-card-header">
                         @item.Name
                     </div>
-                    <div id="sortable@(item.Id)" class="disable-item-sorting card-body parent-card-body sortable">
+                    <div id="subItemsortable@(item.Id)" class="disable-item-sorting card-body parent-card-body sortable">
                         @{
                             if (item.Children != null)
                             {
                                 foreach (var child in item.Children)
                                 {
-                                    <div class="card sub-card"  id="child@(item.Children + "|" + item.Id)" data-item-id="@(item.Children + "|" + item.Id)">
+                                    <div class="card sub-card"  id="child@(child.Id + "|" + item.Id)" data-item-id="@(child.Id + "|" + item.Id)">
                                         <div class="card-body">
                                             @child.Name
                                         </div>
-                                        <div class=" edit-card">
-                                            <a href="#pablo" class="btn btn-success btn-sm btn-just-icon btn-fill btn-round btn-wd">
+                                        <div class="  edit-card">
+                                            <a href="#pablo" class="disable-item-sorting btn btn-success btn-sm btn-just-icon btn-fill btn-round btn-wd">
                                                 <i class="material-icons">mode_edit</i>
-                                            </a>
-                                            <a href="#pablo" class="btn btn-danger btn-sm btn-just-icon btn-fill btn-round">
-                                                <i class="material-icons">delete</i>
                                             </a>
                                         </div>
                                     </div>
@@ -95,7 +131,7 @@
                     </div>
                 </div>
             }
-            <div class="card parent-card new-parent-card fixed"  id="item-1" data-item-id="-1">
+            <div class="card parent-card new-parent-card disable-item-sorting static" data-item-id="-1">
                 <div class="card-header card-header-primary parent-card-header">
                    + New item
                 </div>
