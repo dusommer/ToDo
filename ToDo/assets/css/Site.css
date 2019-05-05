@@ -92,12 +92,10 @@
 
 .card-header:hover ~ .edit-sub-item-card {
     visibility: visible;
-    opacity: 0.3;
 }
 
 .edit-sub-item-card:hover {
     visibility: visible;
-    opacity: 1;
 }
 
 .ui-state-highlight {
@@ -105,4 +103,5 @@
     display: inline-flex;
     margin-right: 10px;
     margin-bottom: 10px;
+    z-index:9999;
 }

@@ -7,7 +7,6 @@
         $("#itemSortable").sortable({
             placeholder: 'ui-state-highlight',
             revert: true,
-            axis: "x",
             cancel: ".disable-item-sorting",
             opacity: 0.5,
             update: function (event, ui) {
@@ -34,71 +33,91 @@
         $("div[id^='subItemsortable']").sortable({
             opacity: 0.5,
             revert: true,
+            placeholder: 'ui-state-highlight',
             cancel: ".disable-sub-item-sorting",
+            start: function (event, ui) {
+                debugger
+                document.getElementById("subItemsortable-1").classList.remove("d-none");
+            },
             update: function (event, ui) {
-                var itemIds = "";
+                var itens = "";
+                var idNewItem = "";
                 $("div[id*='subItemsortable']").find(".sub-item-card").each(function () {
-                    var itemId = $(this).attr("data-sub-item-id");
-                    itemIds = itemIds + "," + itemId;
-                });
-                $.ajax({
-                    url: '@Url.Action("UpdateSubItem", "Home")',
-                    data: { itemIds: itemIds },
-                    type: 'POST',
-                    success: function (data) {
-
-                    },
-                    error: function (xhr, status, error) {
-
+                    var subItemId = $(this).attr("data-sub-item-id");
+                    var item = $(this).closest(".item-card");
+                    var itemId = "-1";
+                    if (item.length > 0) {
+                        itemId = item[0].getAttribute("data-item-id")
+                    } else {
+                        idNewItem = subItemId;
                     }
-
+                    itens = itens + "," + subItemId + "|" + itemId;
                 });
+                if (idNewItem != "") {
+                    document.getElementById("inptItemId").value = idNewItem;
+                    $("#btnSaveItem").submit();
+                } else {
+                    $.ajax({
+                        url: '@Url.Action("UpdateSubItem", "Home")',
+                        data: { itens: itens },
+                        type: 'POST',
+                        success: function (data) {
+
+                        },
+                        error: function (xhr, status, error) {
+
+                        }
+                    });
+                }
+
             },
             stop: function (event, ui) {
-
+                document.getElementById("subItemsortable-1").classList.add("d-none");
             },
-            receive: function(event, ui) {
+            receive: function (event, ui) {
             },
             connectWith: ".sortable"
         });
 
     });
 </script>
-@foreach (var item in Model)
+@if (Model != null)
 {
-    <div class="card item-card" id="item@(item.Id)" data-item-id="@(item.Id)">
-        <div class="card-header card-header-primary item-card-header">
-            <labe id="descript@(item.Id)">@item.Description</labe>
+    foreach (var item in Model.Where(x => x.ParentItemID == 0))
+    {
+        <div class="sortable drop-card-transform d-none" id="subItemsortable-1" data-item-id="-1">
+            <label>Drop here to transform in new item</label>
         </div>
-        <div class="edit-sub-item-card">
-            <a href="#" class="disable-item-sorting btn btn-success btn-sm btn-just-icon btn-fill btn-round btn-wd" onclick="AddEditItem(@item.Id,'@item.Description')">
-                <i class="material-icons">mode_edit</i>
-            </a>
-        </div>
-        <div id="subItemsortable@(item.Id)" class="disable-item-sorting card-body item-card-body sortable">
-            @{
-                if (item.Children != null)
-                {
-                    foreach (var child in item.Children)
+        <div class="card item-card" id="item@(item.Id)" data-item-id="@(item.Id)">
+            <div class="card-header card-header-primary item-card-header">
+                <labe id="descript@(item.Id)">@item.Description</labe>
+            </div>
+            <div class="edit-sub-item-card">
+                <a href="#" class="disable-item-sorting btn btn-primary btn-sm btn-just-icon btn-fill btn-round btn-wd" onclick="AddEditItem(@item.Id,'','@item.Description')">
+                    <i class="material-icons">mode_edit</i>
+                </a>
+            </div>
+            <div id="subItemsortable@(item.Id)" class="disable-item-sorting card-body item-card-body sortable">
+                @{
+                    foreach (var subItem in Model.Where(x => x.ParentItemID == item.Id))
                     {
-                        <div class="card sub-item-card" id="child@(child.Id + "|" + item.Id)" data-sub-item-id="@(child.Id + "|" + item.Id)">
+                        <div class="card sub-item-card" id="child@(subItem.Id)" data-sub-item-id="@(subItem.Id)">
                             <div class="card-body">
-                                @child.Description
+                                @subItem.Description
                             </div>
                             <div class="edit-sub-item-card">
-                                <a href="#" class="disable-sub-item-sorting btn btn-success btn-sm btn-just-icon btn-fill btn-round btn-wd">
+                                <a href="#" class="disable-sub-item-sorting btn btn-primary btn-sm btn-just-icon btn-fill btn-round btn-wd" onclick="AddEditItem(@subItem.Id,@item.Id,'@subItem.Description')">
                                     <i class="material-icons">mode_edit</i>
                                 </a>
                             </div>
                         </div>
                     }
                 }
-            }
 
-
+            </div>
+            <div class="disable-item-sorting card-footer item-card-footer" onclick="AddEditItem('',@item.Id,'')">
+                <span>+ New sub-item</span>
+            </div>
         </div>
-        <div class="disable-item-sorting card-footer item-card-footer" data-toggle="modal" data-target="#newItemModal">
-            <span>+ New sub-item</span>
-        </div>
-    </div>
+    }
 }

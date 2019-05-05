@@ -10,24 +10,26 @@
         $("#addEditItemModal").modal("hide");
     }
 
-    function AddEditItem(id, description) {
-        debugger
-        if (id == undefined) {
+    function AddEditItem(id, parentId, description) {
+        if (id == undefined || id == "") {
             document.getElementById("btnRemoveItem").classList.add("d-none");
-            document.getElementById("btnSaveItem").classList.remove("d-none");
-            document.getElementById("btnUpdateItem").classList.add("d-none");
             document.getElementById("itemModalLabel").innerText = "Add new item";
+            document.getElementById("inptParentItemId").value = "";
             document.getElementById("inptDescription").value = "";
             document.getElementById("inptItemId").value = "";
         }
         else {
             document.getElementById("btnRemoveItem").classList.remove("d-none");
-            document.getElementById("btnSaveItem").classList.add("d-none");
-            document.getElementById("btnUpdateItem").classList.remove("d-none");
             document.getElementById("itemModalLabel").innerText = "Edit item";
+            document.getElementById("inptParentItemId").value = "";
             document.getElementById("inptDescription").value = description;
             document.getElementById("inptItemId").value = id;
         }
+
+        if (parentId != undefined) {
+            document.getElementById("inptParentItemId").value = parentId;
+        }
+
         $("#addEditItemModal").modal("show");
     }
 </script>
@@ -54,13 +56,13 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" name="itemId" id="inptItemId" value="" />
+                    <input type="hidden" name="inptParentItemId" id="inptParentItemId" value="" />
                     <input type="text" name="description" class="form-control" placeholder="Description" id="inptDescription">
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary mr-1" onclick="CloseModal()" id="btnSaveItem" name="ButtonType" value="Save">Save</button>
-                    <button type="submit" class="btn btn-primary mr-1" onclick="CloseModal()" id="btnUpdateItem" name="ButtonType" value="Update">Update</button>
                     <button type="submit" class="btn btn-danger mr-1 d-none" onclick="CloseModal()" id="btnRemoveItem" name="ButtonType" value="Remove">Remove</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>
