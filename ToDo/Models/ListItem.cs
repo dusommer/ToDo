@@ -5,7 +5,7 @@ using System.Web;
 
 namespace ToDo.Models
 {
-    public class ListItems
+    public class ListItem
     {
         public int Id { get; set; }
         public string Name { get; set; }
