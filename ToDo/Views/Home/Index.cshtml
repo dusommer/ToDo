@@ -1,78 +1,35 @@
-﻿@using ToDo.Models
-
+﻿@model IEnumerable<ListItems>
+@using ToDo.Models
 @{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Home";
 }
-
-<script>
-
-    function CloseModal() {
-        $("#addEditItemModal").modal("hide");
-    }
-
-    function AddEditItem(id, parentId, description) {
-        var modalLabel = "Insert new item";
-        document.getElementById("btnConvertItem").classList.add("d-none");
-        document.getElementById("btnRemoveItem").classList.add("d-none");
-        document.getElementById("inptParentItemId").value = "";
-        document.getElementById("inptDescription").value = "";
-        document.getElementById("inptItemId").value = "";
-
-        if (id != undefined && id != "") {
-            modalLabel = "Edit item";
-            document.getElementById("btnRemoveItem").classList.remove("d-none");
-            document.getElementById("inptParentItemId").value = "";
-            document.getElementById("inptDescription").value = description;
-            document.getElementById("inptItemId").value = id;
-        }
-
-        if (parentId != undefined && parentId != "") {
-            modalLabel = "Insert new sub-item";
-            if (id != undefined && id != "") {
-                modalLabel = "Edit sub-item";
-                document.getElementById("btnConvertItem").classList.remove("d-none");
-            }
-            document.getElementById("inptParentItemId").value = parentId;
-        }
-
-        document.getElementById("itemModalLabel").innerText = modalLabel;
-        $("#addEditItemModal").modal("show");
-    }
-</script>
 <div class="container">
-    <button class="btn btn-primary btn-round" onclick="AddEditItem()">
-        <i class="material-icons">add</i>  New principal item
-    </button>
-    <div class="card-block" id="itemSortable">
-        @Html.Partial("PartialItens", ViewBag.ListItens as List<Item>)
-    </div>
-</div>
-
-
-@using (Ajax.BeginForm("SaveItem", "Home", new AjaxOptions() { UpdateTargetId = "itemSortable", InsertionMode = InsertionMode.Replace, HttpMethod = "POST" }))
-{
-    <div class="modal fade" id="addEditItemModal" tabindex="-1" role="dialog" aria-labelledby="itemModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="itemModalLabel"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="itemId" id="inptItemId" value="" />
-                    <input type="hidden" name="inptParentItemId" id="inptParentItemId" value="" />
-                    <input type="text" name="description" class="form-control" placeholder="Description" id="inptDescription">
-                    
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-default mr-1" onclick="CloseModal()" id="btnConvertItem" name="ButtonType" value="Convert">Convert to principal item</button>
-                    <button type="submit" class="btn btn-primary mr-1" onclick="CloseModal()" id="btnSaveItem" name="ButtonType" value="Save">Save</button>
-                    <button type="submit" class="btn btn-danger mr-1 d-none" onclick="CloseModal()" id="btnRemoveItem" name="ButtonType" value="Remove">Remove</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                </div>
+    <div class="col-5">
+        <h3>Welcome dusommer@hotmail.com</h3>
+        <div class="card card-nav-tabs text-center">
+            <div class="card-header card-header-primary">
+                <h3> Lists of items</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">
+                    Lists you have created
+                </h4>
+                @foreach (var item in Model)
+                {
+                    <blockquote class="blockquote mb-2">
+                        <span class="font-weight-bold">@item.Name</span>
+                        <a class="btn btn-sm btn-success btn-just-icon btn-fill btn-round btn-wd" href="/Item/Index">
+                            <i class="material-icons">mode_edit</i>
+                        </a>
+                        <a href="#pablo" class="btn btn-sm btn-danger btn-just-icon btn-fill btn-round">
+                            <i class="material-icons">delete</i>
+                        </a>
+                    </blockquote>
+                }
+            </div>
+            <div class="card-footer text-muted">
             </div>
         </div>
+
     </div>
-}
+</div>

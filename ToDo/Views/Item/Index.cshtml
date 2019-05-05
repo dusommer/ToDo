@@ -1,0 +1,127 @@
+﻿@using ToDo.Models
+
+@{
+    ViewBag.Title = "Items";
+}
+
+<script>
+
+    function CloseModal() {
+        $("#addEditItemModal").modal("hide");
+    }
+
+    function AddEditItem(id, parentId, description) {
+        var modalLabel = "Insert new item";
+        document.getElementById("btnConvertItem").classList.add("d-none");
+        document.getElementById("btnRemoveItem").classList.add("d-none");
+        document.getElementById("inptParentItemId").value = "";
+        document.getElementById("inptDescription").value = "";
+        document.getElementById("inptItemId").value = "";
+
+        if (id != undefined && id != "") {
+            modalLabel = "Edit item";
+            document.getElementById("btnRemoveItem").classList.remove("d-none");
+            document.getElementById("inptParentItemId").value = "";
+            document.getElementById("inptDescription").value = description;
+            document.getElementById("inptItemId").value = id;
+        }
+
+        if (parentId != undefined && parentId != "") {
+            modalLabel = "Insert new sub-item";
+            if (id != undefined && id != "") {
+                modalLabel = "Edit sub-item";
+                document.getElementById("btnConvertItem").classList.remove("d-none");
+            }
+            document.getElementById("inptParentItemId").value = parentId;
+        }
+
+        document.getElementById("itemModalLabel").innerText = modalLabel;
+        $("#addEditItemModal").modal("show");
+    }
+
+    function OpenModalEmail() {
+        $("#EmailModal").modal("show");
+    }
+    function SendEmail() {
+        var email = "";
+         $.ajax({
+            url: '@Url.Action("SendEmail", "Item")',
+            data: { email: email },
+            type: 'POST',
+            success: function (data) {
+
+            },
+            error: function (xhr, status, error) {
+
+            }
+        });
+    }
+</script>
+<div class="container">
+    <div class="d-block">
+        <div class="btn-group">
+            <a class="btn btn-primary btn-round" href="/Home/Index">
+                <i class="material-icons">home</i>  Back to home
+            </a>
+            <button class="btn btn-info btn-round" onclick="AddEditItem()">
+                <i class="material-icons">add</i>  New item
+            </button>
+            <button class="btn btn-success btn-round" onclick="OpenModalEmail()">
+                <i class="material-icons">share</i>  Share list
+            </button>
+        </div>
+            <h3 class="ml-4 d-inline">Sprint 01/2019  A </h3><h5 class="ml-4 d-inline">dusommer@hotmail.com</h5>
+    </div>
+    <div class="card-block" id="itemSortable">
+        @Html.Partial("PartialItems", ViewBag.ListItems as List<Item>)
+    </div>
+</div>
+
+
+@using (Ajax.BeginForm("SaveItem", "Item", new AjaxOptions() { UpdateTargetId = "itemSortable", InsertionMode = InsertionMode.Replace, HttpMethod = "POST" }))
+{
+    <div class="modal fade" id="addEditItemModal" tabindex="-1" role="dialog" aria-labelledby="itemModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="itemModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="itemId" id="inptItemId" value="" />
+                    <input type="hidden" name="inptParentItemId" id="inptParentItemId" value="" />
+                    <input type="text" name="description" class="form-control" placeholder="Description" id="inptDescription">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-default mr-1" onclick="CloseModal()" id="btnConvertItem" name="ButtonType" value="Convert">Convert to principal item</button>
+                    <button type="submit" class="btn btn-primary mr-1" onclick="CloseModal()" id="btnSaveItem" name="ButtonType" value="Save">Save</button>
+                    <button type="submit" class="btn btn-danger mr-1 d-none" onclick="CloseModal()" id="btnRemoveItem" name="ButtonType" value="Remove">Remove</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="modal fade" id="EmailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emailModalLabel">List e-mails shared</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" name="email" class="form-control" placeholder="Email" id="inptEmail">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary mr-1" onclick="SendEmail()" id="btnShareEmail">Share</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
