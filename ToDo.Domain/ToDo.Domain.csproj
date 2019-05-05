@@ -100,10 +100,12 @@
   <ItemGroup>
     <Compile Include="Arguments\Item\InsertItemRequest.cs" />
     <Compile Include="Arguments\Item\InsertItemResponse.cs" />
+    <Compile Include="Arguments\Item\RemoveItemResponse.cs" />
     <Compile Include="Arguments\ListItem\InsertListItemRequest.cs" />
     <Compile Include="Arguments\ListItem\InsertListItemResponse.cs" />
     <Compile Include="Arguments\Item\UpdateItemRequest.cs" />
     <Compile Include="Arguments\Item\UpdateItemResponse.cs" />
+    <Compile Include="Arguments\ListItem\RemoveListItemResponse.cs" />
     <Compile Include="Entities\Base\EntityBase.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\ListItem.cs" />
@@ -116,6 +118,8 @@
     <Compile Include="Interfaces\Services\IServiceItem.cs" />
     <Compile Include="Interfaces\Services\IServiceListItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ServiceItem.cs" />
+    <Compile Include="Services\ServiceListItem.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

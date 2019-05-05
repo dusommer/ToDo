@@ -1,6 +1,6 @@
 ﻿using ToDo.Domain.Interfaces.Arguments;
 
-namespace ToDo.Domain.Arguments.ListItem
+namespace ToDo.Domain.Arguments.Item
 {
     public class UpdateItemResponse : IResponse
     {

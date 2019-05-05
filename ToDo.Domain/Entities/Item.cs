@@ -1,4 +1,5 @@
 ﻿using prmToolkit.NotificationPattern;
+using ToDo.Domain.Arguments.Item;
 using ToDo.Domain.Entities.Base;
 
 namespace ToDo.Domain.Entities
@@ -32,6 +33,14 @@ namespace ToDo.Domain.Entities
             new AddNotifications<Item>(this)
                 .IfNullOrEmpty(x => x.Description, "Description is required.")
                 .IfAreEquals(x => x.IdListItem, 0, "List item is required.");
+        }
+
+        public void Update(UpdateItemRequest request)
+        {
+            Description = request.Description;
+            Position = request.Position;
+            IdParentItem = request.IdParentItem;
+            Validate();
         }
     }
 }

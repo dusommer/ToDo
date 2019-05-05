@@ -1,8 +1,9 @@
-﻿using ToDo.Domain.Interfaces.Repositories.Base;
+﻿using ToDo.Domain.Entities;
+using ToDo.Domain.Interfaces.Repositories.Base;
 
 namespace ToDo.Domain.Interfaces.Repositories
 {
-    public interface IRepositoryListItem : IRepositoryBase<IRepositoryListItem, int>
+    public interface IRepositoryListItem : IRepositoryBase<ListItem, int>
     {
     }
 }
