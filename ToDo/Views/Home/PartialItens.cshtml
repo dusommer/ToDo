@@ -33,46 +33,35 @@
         $("div[id^='subItemsortable']").sortable({
             opacity: 0.5,
             revert: true,
-            placeholder: 'ui-state-highlight',
             cancel: ".disable-sub-item-sorting",
             start: function (event, ui) {
-                debugger
-                document.getElementById("subItemsortable-1").classList.remove("d-none");
             },
             update: function (event, ui) {
                 var itens = "";
-                var idNewItem = "";
                 $("div[id*='subItemsortable']").find(".sub-item-card").each(function () {
                     var subItemId = $(this).attr("data-sub-item-id");
                     var item = $(this).closest(".item-card");
                     var itemId = "-1";
                     if (item.length > 0) {
                         itemId = item[0].getAttribute("data-item-id")
-                    } else {
-                        idNewItem = subItemId;
                     }
                     itens = itens + "," + subItemId + "|" + itemId;
                 });
-                if (idNewItem != "") {
-                    document.getElementById("inptItemId").value = idNewItem;
-                    $("#btnSaveItem").submit();
-                } else {
-                    $.ajax({
-                        url: '@Url.Action("UpdateSubItem", "Home")',
-                        data: { itens: itens },
-                        type: 'POST',
-                        success: function (data) {
 
-                        },
-                        error: function (xhr, status, error) {
+                $.ajax({
+                    url: '@Url.Action("UpdateSubItem", "Home")',
+                    data: { itens: itens },
+                    type: 'POST',
+                    success: function (data) {
 
-                        }
-                    });
-                }
+                    },
+                    error: function (xhr, status, error) {
+
+                    }
+                });
 
             },
             stop: function (event, ui) {
-                document.getElementById("subItemsortable-1").classList.add("d-none");
             },
             receive: function (event, ui) {
             },
@@ -85,9 +74,6 @@
 {
     foreach (var item in Model.Where(x => x.ParentItemID == 0))
     {
-        <div class="sortable drop-card-transform d-none" id="subItemsortable-1" data-item-id="-1">
-            <label>Drop here to transform in new item</label>
-        </div>
         <div class="card item-card" id="item@(item.Id)" data-item-id="@(item.Id)">
             <div class="card-header card-header-primary item-card-header">
                 <labe id="descript@(item.Id)">@item.Description</labe>

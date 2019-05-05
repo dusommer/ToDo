@@ -100,7 +100,7 @@ namespace ToDo.Controllers
             var auxList = ListItem;
             var item = new Item();
 
-            if (string.IsNullOrEmpty(buttonType) || buttonType.Equals("Save"))
+            if (buttonType.Equals("Save") || buttonType.Equals("Convert"))
             {
                 if (string.IsNullOrEmpty(itemId))
                 {
@@ -116,14 +116,12 @@ namespace ToDo.Controllers
                 else
                 {
                     item = auxList.FirstOrDefault(x => x.Id.ToString().Equals(itemId));
-                    if (item.ParentItemID != 0 && string.IsNullOrEmpty(inptParentItemId))
+                    item.Description = description;
+
+                    if (buttonType.Equals("Convert") && item.ParentItemID != 0)
                     {
                         item.ParentItemID = 0;
                         item.Position = auxList.Where(x => x.ParentItemID == 0).Max(x => x.Position) + 1;
-                    }
-                    else if (!string.IsNullOrEmpty(description))
-                    {
-                        item.Description = description;
                     }
                 }
             }
