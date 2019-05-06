@@ -5,6 +5,6 @@
         public string Description { get; set; }
         public int Position { get; set; }
         public int IdListItem { get; set; }
-        public int IdParentItem { get; set; }
+        public int? IdParentItem { get; set; }
     }
 }

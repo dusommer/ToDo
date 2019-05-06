@@ -5,73 +5,51 @@ using System.Net;
 using System.Net.Mail;
 using System.Web.Mvc;
 using ToDo.Models;
+using ToDo.Models.Arguments.Item;
+using ToDo.ServicesApi;
 
 namespace ToDo.Controllers
 {
     public class ItemController : Controller
     {
-        Random random = new Random();
-        public List<Item> ListItem
+        public int idList = 15;
+        private readonly IServiceApiItem _serviceItem;
+
+        public ItemController(IServiceApiItem serviceItem)
         {
-            get
-            {
-                List<Item> retorno = null;
-                if (Session["ListItem"] != null)
-                {
-                    retorno = (Session["ListItem"] as List<Item>).OrderBy(x => x.Position).ToList();
-                }
-                return retorno;
-            }
-            set
-            {
-                Session["ListItem"] = value;
-            }
+            _serviceItem = serviceItem;
         }
         public ActionResult Index()
         {
-            if (ListItem == null)
-            {
-                var items = new List<Item>();
-                var item4 = new Item() { Description = "ToDo", ID = random.Next(), Position = 0 };
-                var item1 = new Item() { Description = "{1635945} [Prior 8] Erro ao Duplicar documento no contas a pagar - fora da data contábil", ID = random.Next(), Position = 0, ParentItemID = item4.ID };
-                var item2 = new Item() { Description = "Nenhum trabalho sobre falsos cognatos pode estar completo sem a presença deste campeão de audiência. O substantivo “PARENT” não significa “parente”", ID = random.Next(), Position = 1, ParentItemID = item4.ID };
-                var item3 = new Item() { Description = "parent significado, definição parent: 1. a mother or father of a person or an animal: 2. a company that owns one or more other companies: 3. a person who gives", ID = random.Next(), Position = 2, ParentItemID = item4.ID };
-
-                items.Add(item1);
-                items.Add(item2);
-                items.Add(item3);
-                items.Add(item4);
-                items.Add(new Item() { Description = "Doing", ID = random.Next(), Position = 1 });
-                items.Add(new Item() { Description = "Done", ID = random.Next(), Position = 2 });
-                ListItem = items;
-            }
-            ViewBag.ListItems = ListItem;
+            ViewBag.ListItems = _serviceItem.GetByLisItem(idList);
             return View();
         }
 
         public ActionResult UpdateItem(string items)
         {
-            var updated = new List<Item>();
+            var listItem = _serviceItem.GetByLisItem(idList);
             if (!string.IsNullOrEmpty(items))
             {
                 var list = items.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
 
                 for (int i = 0; i < list.Length; i++)
                 {
-                    var item = ListItem.Find(x => x.ID == list[i]);
+                    var item = listItem.Find(x => x.Id == list[i]);
                     if (item != null && item.Position != i)
                     {
                         item.Position = i;
-                        updated.Add(item);
+
+                        _serviceItem.Update((UpdateItemRequest)item);
                     }
                 }
             }
+
             return Json(true, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult UpdateSubItem(string items)
         {
-            var updated = new List<Item>();
+            var listItem = _serviceItem.GetByLisItem(idList);
             if (!string.IsNullOrEmpty(items))
             {
                 var list = items.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToArray();
@@ -79,15 +57,15 @@ namespace ToDo.Controllers
                 for (int i = 0; i < list.Length; i++)
                 {
                     var itemMoved = list[i].Split('|').Select(int.Parse).ToArray();
-                    var itemInList = ListItem.Find(x => x.ID == itemMoved[0]);
+                    var itemInList = listItem.Find(x => x.Id == itemMoved[0]);
 
                     if (itemInList != null &&
-                        (itemInList.Position != i || (itemInList.Position == i && itemInList.ParentItemID == itemMoved[1])))
+                        (itemInList.Position != i || (itemInList.Position == i && itemInList.IdParentItem != itemMoved[1])))
                     {
                         itemInList.Position = i;
-                        itemInList.ParentItemID = itemMoved[1];
-                        updated.Add(itemInList);
+                        itemInList.IdParentItem = itemMoved[1];
 
+                        _serviceItem.Update((UpdateItemRequest)itemInList);
                     }
                 }
             }
@@ -98,42 +76,56 @@ namespace ToDo.Controllers
         [HttpPost]
         public ActionResult SaveItem(string description, string itemId, string inptParentItemId, string buttonType)
         {
-            var auxList = ListItem;
-            var item = new Item();
+            var auxList = _serviceItem.GetByLisItem(idList);
 
             if (buttonType.Equals("Save") || buttonType.Equals("Convert"))
             {
                 if (string.IsNullOrEmpty(itemId))
                 {
-                    item = new Item() { Description = description, ID = random.Next(), Position = ListItem.Count() };
+                    var request = new InsertItemRequest() { Description = description, IdListItem = idList };
 
                     if (!string.IsNullOrEmpty(inptParentItemId))
                     {
-                        item.ParentItemID = int.Parse(inptParentItemId);
+                        request.IdParentItem = int.Parse(inptParentItemId);
+                        var parentItens = auxList.Where(x => x.IdParentItem != null &&
+                                                              x.IdParentItem.Value.ToString() == inptParentItemId);
+                        request.Position = parentItens.Count() > 0 ? parentItens.Max(x => x.Position) + 1 : 0;
+                    }
+                    else
+                    {
+                        request.Position = auxList.Count > 0 ? auxList.Where(x => x.IdParentItem == null || x.IdParentItem.Value == 0)
+                                                                     .Max(x => x.Position) + 1 : 0;
+
                     }
 
-                    auxList.Add(item);
+                    _serviceItem.Insert(request);
                 }
                 else
                 {
-                    item = auxList.FirstOrDefault(x => x.ID.ToString().Equals(itemId));
+                    var item = auxList.FirstOrDefault(x => x.Id.ToString().Equals(itemId));
                     item.Description = description;
 
-                    if (buttonType.Equals("Convert") && item.ParentItemID != 0)
+                    if (buttonType.Equals("Convert") && item.IdParentItem != 0)
                     {
-                        item.ParentItemID = 0;
-                        item.Position = auxList.Where(x => x.ParentItemID == 0).Max(x => x.Position) + 1;
+                        item.IdParentItem = null;
+                        item.Position = auxList.Count > 0 ? auxList.Where(x => x.IdParentItem == null || x.IdParentItem.Value == 0).Max(x => x.Position) + 1 : 0;
                     }
+                    _serviceItem.Update((UpdateItemRequest)item);
                 }
             }
             else
             {
-                auxList.RemoveAll(x => x.ParentItemID.ToString().Equals(itemId) || x.ID.ToString().Equals(itemId));
+                var items = auxList.Where(x => x.IdParentItem.ToString().Equals(itemId));
+
+                foreach (var item in items)
+                {
+                    _serviceItem.Remove(item.Id);
+                }
+
+                _serviceItem.Remove(int.Parse(itemId));
             }
 
-            ListItem = auxList;
-
-            return PartialView("PartialItems", ListItem);
+            return PartialView("PartialItems", _serviceItem.GetByLisItem(idList));
         }
 
         [HttpPost]
@@ -177,7 +169,7 @@ namespace ToDo.Controllers
                 {
                 }
             }
-            return PartialView("PartialItems", ListItem);
+            return PartialView("PartialItems", _serviceItem.GetByLisItem(idList));
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ToDo.Domain.Arguments.Item
+﻿namespace ToDo.Domain.Arguments.ListItem
 {
     public class ListItemResponse
     {

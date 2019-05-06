@@ -7,7 +7,7 @@ namespace ToDo.Domain.Arguments.Item
         public int Id { get; set; }
         public string Description { get; set; }
         public int Position { get; set; }
-        public int IdParentItem { get; set; }
+        public int? IdParentItem { get; set; }
 
         public string Message { get; set; }
 
@@ -18,7 +18,7 @@ namespace ToDo.Domain.Arguments.Item
                 Id = item.Id,
                 Description = item.Description,
                 Position = item.Position,
-                IdParentItem = item.IdParentItem.Value,
+                IdParentItem = item.IdParentItem,
                 Message = "Item updated successfully."
             };
         }

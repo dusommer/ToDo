@@ -7,7 +7,7 @@ namespace ToDo.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IServiceApiListItem _serviceLisItem;
+        private readonly IServiceApiListItem _serviceListItem;
 
         public string UserEmail
         {
@@ -26,17 +26,17 @@ namespace ToDo.Controllers
 
         public HomeController(IServiceApiListItem serviceLisItem)
         {
-            _serviceLisItem = serviceLisItem;
+            _serviceListItem = serviceLisItem;
         }
 
         public ActionResult Index()
         {
-            //UserEmail = "dusommer@gmail.com";
+            UserEmail = "dusommer@gmail.com";
             ViewBag.UserEmail = UserEmail;
             List<ListItemResponse> list = new List<ListItemResponse>();
             if (!string.IsNullOrEmpty(UserEmail))
             {
-                list = _serviceLisItem.GetByEmail(UserEmail.ToLower());
+                list = _serviceListItem.GetByEmail(UserEmail.ToLower());
             }
             return View(list);
         }
@@ -51,14 +51,14 @@ namespace ToDo.Controllers
         [HttpPost]
         public ActionResult RemoveList(string listId)
         {
-            _serviceLisItem.Remove(listId);
+            _serviceListItem.Remove(listId);
             return Json(true, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public ActionResult SaveList(string name)
         {
-            _serviceLisItem.Insert(name, UserEmail);
+            _serviceListItem.Insert(name, UserEmail);
             return Json(true, JsonRequestBehavior.AllowGet);
         }
     }
