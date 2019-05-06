@@ -1,40 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
-using ToDo.Models;
+using ToDo.Models.Arguments.ListItem;
+using ToDo.ServicesApi;
 
 namespace ToDo.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IServiceApiListItem _serviceLisItem;
+
+        public string UserEmail
+        {
+            get
+            {
+                if (Session["ListItem"] == null)
+                    return "";
+
+                return Session["ListItem"].ToString();
+            }
+            set
+            {
+                Session["ListItem"] = value;
+            }
+        }
+
+        public HomeController(IServiceApiListItem serviceLisItem)
+        {
+            _serviceLisItem = serviceLisItem;
+        }
+
         public ActionResult Index()
         {
-            var list = new List<ListItem>();
-            list.Add(new ListItem() { Id = 1, Name = "Sprint 01/2019 A", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 2, Name = "Sprint 01/2019 B", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 3, Name = "Sprint 02/2019 A", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 4, Name = "Sprint 02/2019 B", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 1, Name = "Sprint 01/2019 A", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 2, Name = "Sprint 01/2019 B", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 3, Name = "Sprint 02/2019 A", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 4, Name = "Sprint 02/2019 B", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 1, Name = "Sprint 01/2019 A", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 2, Name = "Sprint 01/2019 B", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 3, Name = "Sprint 02/2019 A", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 4, Name = "Sprint 02/2019 B", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 1, Name = "Sprint 01/2019 A", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 2, Name = "Sprint 01/2019 B", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 3, Name = "Sprint 02/2019 A", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 4, Name = "Sprint 02/2019 B", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 1, Name = "Sprint 01/2019 A", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 2, Name = "Sprint 01/2019 B", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 3, Name = "Sprint 02/2019 A", UserEmail = "dusommer@hotmail.com" });
-            list.Add(new ListItem() { Id = 4, Name = "Sprint 02/2019 B", UserEmail = "dusommer@hotmail.com" });
+            //UserEmail = "dusommer@gmail.com";
+            ViewBag.UserEmail = UserEmail;
+            List<ListItemResponse> list = new List<ListItemResponse>();
+            if (!string.IsNullOrEmpty(UserEmail))
+            {
+                list = _serviceLisItem.GetByEmail(UserEmail.ToLower());
+            }
             return View(list);
+        }
+
+        [HttpPost]
+        public ActionResult EnterEmail(string inptEmail)
+        {
+            UserEmail = inptEmail;
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult RemoveList(string listId)
+        {
+            _serviceLisItem.Remove(listId);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult SaveList(string name)
+        {
+            _serviceLisItem.Insert(name, UserEmail);
+            return Json(true, JsonRequestBehavior.AllowGet);
         }
     }
 }

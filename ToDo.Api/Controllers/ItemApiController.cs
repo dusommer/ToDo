@@ -35,15 +35,22 @@ namespace ToDo.Api.Controllers
             return await ExecuteResponse(request, "Update");
         }
 
+        [Route("GetById")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetById(int request)
+        {
+            return await ExecuteResponse(request, "GetById");
+        }
+
         [Route("GetByLisItem")]
-        [HttpPost]
+        [HttpGet]
         public async Task<HttpResponseMessage> GetByLisItem(int request)
         {
             return await ExecuteResponse(request, "GetByLisItem");
         }
 
         [Route("Remove")]
-        [HttpPost]
+        [HttpGet]
         public async Task<HttpResponseMessage> Remove(int request)
         {
             return await ExecuteResponse(request, "Remove");
@@ -62,6 +69,9 @@ namespace ToDo.Api.Controllers
                         break;
                     case "Update":
                         response = _serviceItem.UpdateItem(request as UpdateItemRequest);
+                        break;
+                    case "GetById":
+                        response = _serviceItem.GetById(int.Parse(request.ToString()));
                         break;
                     case "GetByLisItem":
                         response = _serviceItem.GetByListItem(int.Parse(request.ToString()));

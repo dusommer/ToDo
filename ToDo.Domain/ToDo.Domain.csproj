@@ -100,6 +100,8 @@
   <ItemGroup>
     <Compile Include="Arguments\Item\InsertItemRequest.cs" />
     <Compile Include="Arguments\Item\InsertItemResponse.cs" />
+    <Compile Include="Arguments\Item\ItemResponse.cs" />
+    <Compile Include="Arguments\Item\ListItemResponse.cs" />
     <Compile Include="Arguments\Item\RemoveItemResponse.cs" />
     <Compile Include="Arguments\ListItem\InsertListItemRequest.cs" />
     <Compile Include="Arguments\ListItem\InsertListItemResponse.cs" />

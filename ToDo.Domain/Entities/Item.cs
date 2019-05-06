@@ -11,19 +11,22 @@ namespace ToDo.Domain.Entities
 
         }
 
-        public Item(string description, int position, int idListItem, int idParentItem)
+        public Item(string description, int position, int idListItem, int? idParentItem = null)
         {
             Description = description;
             Position = position;
             IdListItem = idListItem;
-            IdParentItem = idParentItem;
+            if (idParentItem != null)
+            {
+                IdParentItem = idParentItem;
+            }
             Validate();
         }
 
         public string Description { get; private set; }
         public int Position { get; private set; }
         public int IdListItem { get; private set; }
-        public int IdParentItem { get; private set; }
+        public int? IdParentItem { get; private set; }
 
         public virtual ListItem ListItem { get; set; }
         public virtual Item ParentItem { get; set; }

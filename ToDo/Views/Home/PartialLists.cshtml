@@ -1,0 +1,19 @@
+﻿@model IEnumerable<ListItemResponse>
+@using ToDo.Models.Arguments.ListItem
+
+@foreach (var item in Model)
+{
+    using (Ajax.BeginForm("RemoveList", "Home", new AjaxOptions() { OnSuccess = "window.location = '" + Url.Action("Index", "Home") + "'", HttpMethod = "POST" }))
+    {
+        <blockquote class="blockquote mb-2">
+            <input type="hidden" name="listId" id="inptItemId" value="@item.Id" />
+            <span class="font-weight-bold">@item.Name</span>
+            <a class="btn btn-sm btn-success btn-just-icon btn-fill btn-round btn-wd" href="/Item/Index">
+                <i class="material-icons">mode_edit</i>
+            </a>
+            <button type="submit" class="btn btn-sm btn-danger btn-just-icon btn-fill btn-round">
+                <i class="material-icons">delete</i>
+            </button>
+        </blockquote>
+    }
+}

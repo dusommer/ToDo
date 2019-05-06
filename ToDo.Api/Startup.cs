@@ -8,9 +8,11 @@ using Owin;
 using System;
 using System.Net.Http.Extensions.Compression.Core.Compressors;
 using System.Web.Http;
-using ToDo.Api;
+using System.Xml;
 using ToDo.Api.Security;
 using ToDo.IoC.Unity;
+
+[assembly: OwinStartup(typeof(ToDo.Api.Startup))]
 
 namespace ToDo.Api
 {
@@ -48,7 +50,7 @@ namespace ToDo.Api
 
             // Modifica a identação
             var jsonSettings = formatters.JsonFormatter.SerializerSettings;
-            jsonSettings.Formatting = Formatting.Indented;
+            jsonSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
             jsonSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
             // Modifica a serialização

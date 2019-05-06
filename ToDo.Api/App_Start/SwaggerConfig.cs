@@ -6,8 +6,6 @@ using Swashbuckle.Swagger;
 using System.Web.Http.Description;
 using System.Collections.Generic;
 
-[assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
-
 namespace ToDo.Api
 {
     public class SwaggerConfig

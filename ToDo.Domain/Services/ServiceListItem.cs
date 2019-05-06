@@ -5,6 +5,7 @@ using ToDo.Domain.Entities;
 using ToDo.Domain.Interfaces.Repositories;
 using ToDo.Domain.Interfaces.Services;
 using System.Linq;
+using ToDo.Domain.Arguments.Item;
 
 namespace ToDo.Domain.Services
 {
@@ -22,14 +23,14 @@ namespace ToDo.Domain.Services
             _repositoryListItem = repositoryListItem;
         }
 
-        public IEnumerable<ListItem> GetByEmail(string email)
+        public IEnumerable<ListItemResponse> GetByEmail(string email)
         {
             if (string.IsNullOrEmpty(email))
             {
                 AddNotification("Email", "Email is required.");
             }
 
-            return _repositoryListItem.Get().Where(x => x.UserEmail.Equals(email));
+            return _repositoryListItem.Get().Where(x => x.UserEmail.Equals(email)).ToList().Select(listItem => (ListItemResponse)listItem);
         }
 
         public InsertListItemResponse InsertListItem(InsertListItemRequest request)

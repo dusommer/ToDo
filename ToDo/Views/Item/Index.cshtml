@@ -70,7 +70,7 @@
                 <i class="material-icons">share</i>  Share list
             </button>
         </div>
-            <h3 class="ml-4 d-inline">Sprint 01/2019  A </h3><h5 class="ml-4 d-inline">dusommer@hotmail.com</h5>
+        <h3 class="ml-4 d-inline">Sprint 01/2019  A </h3><h5 class="ml-4 d-inline">dusommer@hotmail.com</h5>
     </div>
     <div class="card-block" id="itemSortable">
         @Html.Partial("PartialItems", ViewBag.ListItems as List<Item>)
@@ -92,8 +92,10 @@
                 <div class="modal-body">
                     <input type="hidden" name="itemId" id="inptItemId" value="" />
                     <input type="hidden" name="inptParentItemId" id="inptParentItemId" value="" />
-                    <input type="text" name="description" class="form-control" placeholder="Description" id="inptDescription">
-
+                    <div class="form-group">
+                        <label for="inptDescription">Description</label>
+                        <input type="text" name="description" class="form-control" placeholder="Enter description" id="inptDescription">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-default mr-1" onclick="CloseModal()" id="btnConvertItem" name="ButtonType" value="Convert">Convert to principal item</button>

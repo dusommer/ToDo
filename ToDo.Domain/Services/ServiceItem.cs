@@ -22,13 +22,25 @@ namespace ToDo.Domain.Services
             _repositoryItem = repositoryItem;
         }
 
-        public IEnumerable<Item> GetByListItem(int idListItem)
+        public ItemResponse GetById(int id)
+        {
+            if (id == 0)
+            {
+                AddNotification("id", "Id item is required.");
+            }
+            var item = _repositoryItem.GetById(id);
+
+            return (ItemResponse)item;
+        }
+
+        public IEnumerable<ItemResponse> GetByListItem(int idListItem)
         {
             if (idListItem == 0)
             {
                 AddNotification("idListItem", "List item is required.");
             }
-            return _repositoryItem.Get().Where(x => x.IdListItem.Equals(idListItem));
+            var items = _repositoryItem.Get().Where(x => x.IdListItem.Equals(idListItem)).ToList().Select(item => (ItemResponse)item);
+            return items;
         }
 
         public InsertItemResponse InsertItem(InsertItemRequest request)

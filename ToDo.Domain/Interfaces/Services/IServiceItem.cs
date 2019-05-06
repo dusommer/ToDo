@@ -9,7 +9,8 @@ namespace ToDo.Domain.Interfaces.Services
     {
         InsertItemResponse InsertItem(InsertItemRequest request);
         UpdateItemResponse UpdateItem(UpdateItemRequest request);
-        IEnumerable<Item> GetByListItem(int idListItem);
+        ItemResponse GetById(int id);
+        IEnumerable<ItemResponse> GetByListItem(int idListItem);
         RemoveItemResponse RemoveItem(int id);
     }
 }

@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ToDo.Infra.Persistence;
 
 namespace ToDo.Infra.Transaction
 {
     public class UnitOfWork : IUnitOfWork
     {
-        //private readonly HBSISContexto _contexto;
+        private readonly ToDoContext _context;
 
-        //public UnitOfWork(HBSISContexto contexto)
-        //{
-        //    _contexto = contexto;
-        //}
+        public UnitOfWork(ToDoContext context)
+        {
+            _context = context;
+        }
 
         public void Commit()
         {
-            //_contexto.SaveChanges();
+            _context.SaveChanges();
         }
     }
 }

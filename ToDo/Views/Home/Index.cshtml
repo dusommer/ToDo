@@ -1,35 +1,90 @@
-﻿@model IEnumerable<ListItems>
-@using ToDo.Models
+﻿@model IEnumerable<ListItemResponse>
+@using ToDo.Models.Arguments.ListItem
 @{
     ViewBag.Title = "Home";
 }
+<script>
+    function CloseModal() {
+        $("#addListModal").modal("hide");
+    }
+
+    function AddList() {
+        document.getElementById("inptName").value = "";
+        $("#addListModal").modal("show");
+    }
+</script>
 <div class="container">
-    <div class="col-5">
-        <h3>Welcome dusommer@hotmail.com</h3>
-        <div class="card card-nav-tabs text-center">
-            <div class="card-header card-header-primary">
-                <h3> Lists of items</h3>
+    @{
+        if (string.IsNullOrEmpty(ViewBag.UserEmail))
+        {
+            using (Ajax.BeginForm("EnterEmail", "Home", new AjaxOptions() { OnSuccess = "window.location = '" + Url.Action("Index", "Home") + "'", HttpMethod = "POST" }))
+            {
+                <div class="col-5 mt-5 offset-3">
+                    <div class="card card-nav-tabs text-center">
+                        <div class="card-header card-header-primary">
+                            <h3>Enter your e-mail</h3>
+                            <h5>To show all lists you have</h5>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="inptEmail">Email address</label>
+                                    <input type="email" class="form-control" name="inptEmail" id="inptEmail" aria-describedby="emailHelp" placeholder="Enter email">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-5 offset-3">
+                <h3 class="text-center">Welcome @ViewBag.UserEmail</h3>
+                <div class="card card-nav-tabs text-center">
+                    <div class="card-header card-header-primary">
+                        <h3> Lists of items</h3>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            Lists you have created
+                        </h4>
+                        <button class="btn btn-info btn-round" onclick="AddList()">
+                            <i class="material-icons">add</i>  New list
+                        </button>
+                        @Html.Partial("PartialLists", Model)
+                    </div>
+                    <div class="card-footer text-muted">
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <h4 class="card-title">
-                    Lists you have created
-                </h4>
-                @foreach (var item in Model)
-                {
-                    <blockquote class="blockquote mb-2">
-                        <span class="font-weight-bold">@item.Name</span>
-                        <a class="btn btn-sm btn-success btn-just-icon btn-fill btn-round btn-wd" href="/Item/Index">
-                            <i class="material-icons">mode_edit</i>
-                        </a>
-                        <a href="#pablo" class="btn btn-sm btn-danger btn-just-icon btn-fill btn-round">
-                            <i class="material-icons">delete</i>
-                        </a>
-                    </blockquote>
-                }
-            </div>
-            <div class="card-footer text-muted">
+        }
+
+    }
+</div>
+@using (Ajax.BeginForm("SaveList", "Home", new AjaxOptions() { OnSuccess = "window.location = '" + Url.Action("Index", "Home") + "'", HttpMethod = "POST" }))
+{
+    <div class="modal fade" id="addListModal" tabindex="-1" role="dialog" aria-labelledby="listModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="listModalLabel">Insert new list</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="inptEmail">List name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Enter name" id="inptName">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary mr-1" onclick="CloseModal()" id="btnSaveList" name="ButtonType" value="Save">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
             </div>
         </div>
-
     </div>
-</div>
+}

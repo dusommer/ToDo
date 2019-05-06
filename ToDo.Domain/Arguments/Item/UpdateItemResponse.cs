@@ -18,7 +18,7 @@ namespace ToDo.Domain.Arguments.Item
                 Id = item.Id,
                 Description = item.Description,
                 Position = item.Position,
-                IdParentItem = item.IdParentItem,
+                IdParentItem = item.IdParentItem.Value,
                 Message = "Item updated successfully."
             };
         }
