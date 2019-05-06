@@ -74,25 +74,25 @@
 {
     foreach (var item in Model.Where(x => x.ParentItemID == 0))
     {
-        <div class="card item-card" id="item@(item.Id)" data-item-id="@(item.Id)">
+        <div class="card item-card" id="item@(item.ID)" data-item-id="@(item.ID)">
             <div class="card-header card-header-primary item-card-header">
-                <labe id="descript@(item.Id)">@item.Description</labe>
+                <labe id="descript@(item.ID)">@item.Description</labe>
             </div>
             <div class="edit-sub-item-card">
-                <a href="#" class="disable-item-sorting btn btn-primary btn-sm btn-just-icon btn-fill btn-round btn-wd" onclick="AddEditItem(@item.Id,'','@item.Description')">
+                <a href="#" class="disable-item-sorting btn btn-primary btn-sm btn-just-icon btn-fill btn-round btn-wd" onclick="AddEditItem(@item.ID,'','@item.Description')">
                     <i class="material-icons">mode_edit</i>
                 </a>
             </div>
-            <div id="subItemsortable@(item.Id)" class="disable-item-sorting card-body item-card-body sortable">
+            <div id="subItemsortable@(item.ID)" class="disable-item-sorting card-body item-card-body sortable">
                 @{
-                    foreach (var subItem in Model.Where(x => x.ParentItemID == item.Id))
+                    foreach (var subItem in Model.Where(x => x.ParentItemID == item.ID))
                     {
-                        <div class="card sub-item-card" id="child@(subItem.Id)" data-sub-item-id="@(subItem.Id)">
+                        <div class="card sub-item-card" id="child@(subItem.ID)" data-sub-item-id="@(subItem.ID)">
                             <div class="card-body">
                                 @subItem.Description
                             </div>
                             <div class="edit-sub-item-card">
-                                <a href="#" class="disable-sub-item-sorting btn btn-primary btn-sm btn-just-icon btn-fill btn-round btn-wd" onclick="AddEditItem(@subItem.Id,@item.Id,'@subItem.Description')">
+                                <a href="#" class="disable-sub-item-sorting btn btn-primary btn-sm btn-just-icon btn-fill btn-round btn-wd" onclick="AddEditItem(@subItem.ID,@item.ID,'@subItem.Description')">
                                     <i class="material-icons">mode_edit</i>
                                 </a>
                             </div>
@@ -101,7 +101,7 @@
                 }
 
             </div>
-            <div class="disable-item-sorting card-footer item-card-footer" onclick="AddEditItem('',@item.Id,'')">
+            <div class="disable-item-sorting card-footer item-card-footer" onclick="AddEditItem('',@item.ID,'')">
                 <span>+ New sub-item</span>
             </div>
         </div>

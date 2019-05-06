@@ -1,19 +1,36 @@
 ﻿@model IEnumerable<ListItemResponse>
 @using ToDo.Models.Arguments.ListItem
-
-@foreach (var item in Model)
-{
-    using (Ajax.BeginForm("RemoveList", "Home", new AjaxOptions() { OnSuccess = "window.location = '" + Url.Action("Index", "Home") + "'", HttpMethod = "POST" }))
-    {
-        <blockquote class="blockquote mb-2">
-            <input type="hidden" name="listId" id="inptItemId" value="@item.Id" />
-            <span class="font-weight-bold">@item.Name</span>
-            <a class="btn btn-sm btn-success btn-just-icon btn-fill btn-round btn-wd" href="/Item/Index">
-                <i class="material-icons">mode_edit</i>
-            </a>
-            <button type="submit" class="btn btn-sm btn-danger btn-just-icon btn-fill btn-round">
-                <i class="material-icons">delete</i>
+<div class="col-5 offset-3">
+    <h3 class="text-center">Welcome @ViewBag.UserEmail</h3>
+    <div class="card card-nav-tabs text-center">
+        <div class="card-header card-header-primary">
+            <h3> Lists of items</h3>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title">
+                Lists you have created
+            </h4>
+            <button class="btn btn-info btn-round" onclick="AddList()">
+                <i class="material-icons">add</i>  New list
             </button>
-        </blockquote>
-    }
-}
+            @foreach (var item in Model)
+            {
+                using (Ajax.BeginForm("RemoveList", "Home", new AjaxOptions() { OnSuccess = "window.location = '" + Url.Action("Index", "Home") + "'", HttpMethod = "POST" }))
+                {
+                    <blockquote class="blockquote mb-2">
+                        <input type="hidden" name="listId" id="inptItemId" value="@item.Id" />
+                        <span class="font-weight-bold">@item.Name</span>
+                        <a class="btn btn-sm btn-success btn-just-icon btn-fill btn-round btn-wd" href="/Item/Index">
+                            <i class="material-icons">mode_edit</i>
+                        </a>
+                        <button type="submit" class="btn btn-sm btn-danger btn-just-icon btn-fill btn-round">
+                            <i class="material-icons">delete</i>
+                        </button>
+                    </blockquote>
+                }
+            }
+        </div>
+        <div class="card-footer text-muted">
+        </div>
+    </div>
+</div>

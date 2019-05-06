@@ -442,6 +442,10 @@
     <Content Include="Views\Item\PartialItems.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\PartialLists.cshtml" />
+    <Content Include="Views\Home\PartialEmail.cshtml" />
+    <Content Include="Views\Home\PartialModalNewList.cshtml" />
+    <Content Include="Views\Item\PartialModalAddEditItem.cshtml" />
+    <Content Include="Views\Item\PartialModalShareEmail.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
