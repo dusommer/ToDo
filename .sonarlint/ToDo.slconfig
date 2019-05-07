@@ -1,0 +1,15 @@
+{
+  "ServerUri": "https://sonarcloud.io/",
+  "Organization": {
+    "Key": "dusommer-github",
+    "Name": "dusommer"
+  },
+  "ProjectKey": "dusommer_ToDo",
+  "ProjectName": "ToDo",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AWqO78naneK5oxBtVw3A",
+      "ProfileTimestamp": "2019-03-26T02:47:46-03:00"
+    }
+  }
+}

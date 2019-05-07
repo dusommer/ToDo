@@ -16,7 +16,7 @@
                     items = items + "," + itemId;
                 });
                 $.ajax({
-                    url: '@Url.Action("UpdateItem", "Item")',
+                    url: '@Url.Action("UpdatePositionItem", "Item")',
                     data: { items: items },
                     type: 'POST',
                     success: function (data) {
@@ -49,7 +49,7 @@
                 });
 
                 $.ajax({
-                    url: '@Url.Action("UpdateSubItem", "Item")',
+                    url: '@Url.Action("UpdatePositionSubItem", "Item")',
                     data: { items: items },
                     type: 'POST',
                     success: function (data) {
@@ -102,7 +102,7 @@
 
             </div>
             <div class="disable-item-sorting card-footer item-card-footer" onclick="AddEditItem('',@item.Id,'')">
-                <span>+ New sub-item</span>
+                <span>+ Adicionar sub-item</span>
             </div>
         </div>
     }

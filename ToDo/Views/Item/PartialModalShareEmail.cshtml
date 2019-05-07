@@ -2,7 +2,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="emailModalLabel">List e-mails shared</h5>
+                <h5 class="modal-title" id="emailModalLabel">Insira o e-mail que será enviado o link</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -10,9 +10,10 @@
             <div class="modal-body">
                 <input type="text" name="email" class="form-control" placeholder="Email" id="inptEmail">
             </div>
+            <h5 id="erroEmail"></h5>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary mr-1" onclick="SendEmail()" id="btnShareEmail">Share</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary mr-1" onclick="SendEmail('@Url.Action("SendEmail", "Item")')" id="btnShareEmail">Compartilhar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>

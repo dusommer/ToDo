@@ -1,17 +1,9 @@
 ﻿@model IEnumerable<ListItemResponse>
 @using ToDo.Models.Arguments.ListItem
 @{
-    ViewBag.Title = "Home";
+    ViewBag.Title = "Início";
 }
 <script>
-    function CloseModal() {
-        $("#addListModal").modal("hide");
-    }
-
-    function AddList() {
-        document.getElementById("inptName").value = "";
-        $("#addListModal").modal("show");
-    }
 </script>
 <div class="container">
     @{

@@ -31,7 +31,6 @@ namespace ToDo.Controllers
 
         public ActionResult Index()
         {
-            UserEmail = "dusommer@gmail.com";
             ViewBag.UserEmail = UserEmail;
             List<ListItemResponse> list = new List<ListItemResponse>();
             if (!string.IsNullOrEmpty(UserEmail))

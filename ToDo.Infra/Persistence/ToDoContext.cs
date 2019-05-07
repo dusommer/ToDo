@@ -10,6 +10,7 @@ namespace ToDo.Infra.Persistence
         {
 
         }
+
         public IDbSet<Item> Items { get; set; }
         public IDbSet<ListItem> ListItems { get; set; }
 

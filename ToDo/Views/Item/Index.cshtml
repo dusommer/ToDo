@@ -3,73 +3,22 @@
 @{
     ViewBag.Title = "Items";
 }
-
-<script>
-    function CloseModal() {
-        $("#addEditItemModal").modal("hide");
-    }
-
-    function AddEditItem(id, parentId, description) {
-        var modalLabel = "Insert new item";
-        document.getElementById("btnConvertItem").classList.add("d-none");
-        document.getElementById("btnRemoveItem").classList.add("d-none");
-        document.getElementById("inptParentItemId").value = "";
-        document.getElementById("inptDescription").value = "";
-        document.getElementById("inptItemId").value = "";
-
-        if (id != undefined && id != "") {
-            modalLabel = "Edit item";
-            document.getElementById("btnRemoveItem").classList.remove("d-none");
-            document.getElementById("inptParentItemId").value = "";
-            document.getElementById("inptDescription").value = description;
-            document.getElementById("inptItemId").value = id;
-        }
-
-        if (parentId != undefined && parentId != "") {
-            modalLabel = "Insert new sub-item";
-            if (id != undefined && id != "") {
-                modalLabel = "Edit sub-item";
-                document.getElementById("btnConvertItem").classList.remove("d-none");
-            }
-            document.getElementById("inptParentItemId").value = parentId;
-        }
-
-        document.getElementById("itemModalLabel").innerText = modalLabel;
-        $("#addEditItemModal").modal("show");
-    }
-
-    function OpenModalEmail() {
-        $("#EmailModal").modal("show");
-    }
-    function SendEmail() {
-        var email = "";
-         $.ajax({
-            url: '@Url.Action("SendEmail", "Item")',
-            data: { email: email },
-            type: 'POST',
-            success: function (data) {
-
-            },
-            error: function (xhr, status, error) {
-
-            }
-        });
-    }
-</script>
 <div class="container">
     <div class="d-block">
         <div class="btn-group">
             <a class="btn btn-primary btn-round" href="/Home/Index">
-                <i class="material-icons">home</i>  Back to home
+                <i class="material-icons">home</i> Início
             </a>
             <button class="btn btn-info btn-round" onclick="AddEditItem()">
-                <i class="material-icons">add</i>  New item
+                <i class="material-icons">add</i>  Adicione novo item
             </button>
             <button class="btn btn-success btn-round" onclick="OpenModalEmail()">
-                <i class="material-icons">share</i>  Share list
+                <i class="material-icons">share</i>  Compartilhar lista
             </button>
         </div>
-        <h3 class="ml-4 d-inline">Sprint 01/2019  A </h3><h5 class="ml-4 d-inline">dusommer@hotmail.com</h5>
+        <div>
+            <h3 class="ml-4 d-inline" id="nomeLista">@ViewBag.NomeLista</h3><h5 class="ml-4 d-inline">Quem criou: <span id="userEmail">@ViewBag.UserEmail</span></h5>
+        </div>
     </div>
     <div class="card-block" id="itemSortable">
         @Html.Partial("PartialItems", ViewBag.ListItems as List<ItemResponse>)
