@@ -105,3 +105,9 @@
     margin-bottom: 10px;
     z-index: 9999;
 }
+.page-header .title {
+    color: #3C4858;
+}
+.about .description {
+    text-align: justify;
+}

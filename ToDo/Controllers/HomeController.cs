@@ -40,6 +40,11 @@ namespace ToDo.Controllers
             return View(list);
         }
 
+        public ActionResult About()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult EnterEmail(string inptEmail)
         {
